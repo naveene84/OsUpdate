@@ -1,0 +1,21 @@
+--- 
+ - name: enabling yum
+   replace: dest=/etc/yum.repos.d/local_rhel72.repo regexp='enabled=0' replace='enabled=1'
+
+ - name: stop docker daemon
+   service: name=docker state=stopped
+   register: status
+ - debug: msg="docker status= {{ status.state }}"
+
+ - name: upgrade all packages
+   yum:
+     name: '*'
+   register: upstatus
+   failed_when:
+     - "upstatus.rc != 0"
+   ignore_errors: no
+ - debug: msg="updatestatus= {{ upstatus.results }}"
+   notify: "restart vm"
+
+# - include: reboot.yml
+#   when:

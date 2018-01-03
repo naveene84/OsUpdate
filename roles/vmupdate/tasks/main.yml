@@ -1,0 +1,4 @@
+---
+ - include: contupdate.yml
+ - include: updatevm.yml
+ - include: reboot.yml

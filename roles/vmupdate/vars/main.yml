@@ -1,0 +1,6 @@
+ansible_ssh_user: kodiak
+ansible_ssh_pass: kodiak
+ansible_become: yes
+ansible_become_method: su
+ansible_become_pass: kodiakinstall
+

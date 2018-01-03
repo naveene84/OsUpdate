@@ -1,0 +1,5 @@
+---
+- hosts: VM
+  roles: 
+    - vmupdate
+

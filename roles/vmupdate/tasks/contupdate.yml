@@ -1,0 +1,17 @@
+---
+ - name: fetch list of running containers
+   shell: docker ps -a|grep -i 'Up *'|awk -F' ' '{print $1}'
+   register: container_ids
+   failed_when: "'Cannot connect to the Docker daemon.' in container_ids.stderr"
+ - debug: var=container_ids.stdout_lines
+
+ - name: Update OS using Exec
+   command: docker exec -i {{ item }} yum -y update
+   register: upstatus
+   with_items: "{{ container_ids.stdout_lines }}"
+   failed_when:
+     - "upstatus.rc != 0"
+   ignore_errors: no
+
+ - debug: msg="stdout={{item.stdout_lines}}"
+   with_items: "{{ upstatus.results }}"

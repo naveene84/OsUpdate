@@ -1,0 +1,26 @@
+---
+    - name: Reboot host
+      shell: sleep 2 && /usr/sbin/shutdown -r now "Ansible updates triggered"
+      async: 1
+      poll: 0
+      ignore_errors: yes
+
+    - name: Set default reboot_wait_host
+      become: no
+      set_fact:
+         reboot_wait_host: "{{ inventory_hostname }}"
+
+    - name: Set default reboot_wait_port
+      become: no
+      set_fact:
+        reboot_wait_port: "{{ ansible_ssh_port | default(22) }}"
+
+    - name: Wait for host
+      become: no
+      local_action:
+         module: wait_for host={{ reboot_wait_host }} port={{ reboot_wait_port }} state=started delay=15 timeout=300 connect_timeout=30
+
+    - name: Interval before next task
+      become: no
+      pause:
+        seconds: 10
